@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirm Visit</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="interstitial-page">
+    <div class="radar-scene" aria-hidden="true">
+      <div class="radar-grid"></div>
+      <div class="radar-rings"></div>
+      <div class="radar-sweep"></div>
+      <div class="radar-blips">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="hud-lines"></div>
+    </div>
+
+    <main class="panel panel-center interstitial-panel">
+      <h1 class="interstitial-title">Hold up there</h1>
+
+      <section class="interstitial-content">
+        <p class="interstitial-lead">You are about to open:</p>
+        <p class="target-host" id="targetHost"></p>
+        <p class="target-url" id="targetUrl"></p>
+
+        <div class="button-row interstitial-buttons">
+          <button id="continue" class="danger" type="button">Continue</button>
+          <button id="back" class="secondary" type="button">Go back</button>
+        </div>
+
+        <p class="hint">You will be asked again the next time this site tries to load.</p>
+      </section>
+    </main>
+
+    <script src="interstitial.js"></script>
+  </body>
+</html>

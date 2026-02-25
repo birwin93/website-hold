@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website Hold Settings</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="panel">
+      <h1>Website Hold</h1>
+      <p>
+        Add one site per line. You can enter domains like
+        <code>example.com</code> or full URLs like
+        <code>https://news.ycombinator.com</code>.
+      </p>
+
+      <label for="sites" class="label">Blocked sites</label>
+      <textarea
+        id="sites"
+        rows="12"
+        placeholder="instagram.com\nyoutube.com"
+      ></textarea>
+
+      <div class="button-row">
+        <button id="save" type="button">Save</button>
+        <span id="status" class="status" aria-live="polite"></span>
+      </div>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Website Hold",
+  "version": "0.1.0",
+  "description": "Shows a confirmation interstitial before visiting configured websites.",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "options_page": "options.html",
+  "action": {
+    "default_title": "Website Hold"
+  }
+}
