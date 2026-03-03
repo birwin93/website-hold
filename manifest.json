@@ -1,15 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "Website Hold",
-  "version": "0.1.0",
+  "name": "Hold Up",
+  "version": "0.1.1",
   "description": "Shows a confirmation interstitial before visiting configured websites.",
   "permissions": ["storage", "tabs"],
-  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "service-worker.js"
   },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "options_page": "options.html",
   "action": {
-    "default_title": "Website Hold"
+    "default_title": "Hold Up",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
   }
 }

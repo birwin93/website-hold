@@ -1,4 +1,4 @@
-# Website Hold (Chrome Extension)
+# Hold Up (Chrome Extension)
 
 A Manifest V3 Chrome extension that intercepts configured sites and shows a confirmation interstitial before loading them.
 

@@ -6,6 +6,11 @@ const targetHostElement = document.getElementById("targetHost");
 const targetUrlElement = document.getElementById("targetUrl");
 const continueButton = document.getElementById("continue");
 const backButton = document.getElementById("back");
+const hasBackHistory = window.history.length > 1;
+
+if (!hasBackHistory) {
+  backButton.textContent = "Close";
+}
 
 const parsed = parseTarget(targetUrl);
 if (parsed) {
@@ -41,12 +46,21 @@ continueButton.addEventListener("click", () => {
 });
 
 backButton.addEventListener("click", () => {
-  if (window.history.length > 1) {
+  if (hasBackHistory) {
     window.history.back();
     return;
   }
 
-  window.location.href = "chrome://newtab";
+  if (Number.isInteger(tabId)) {
+    chrome.tabs.remove(tabId, () => {
+      if (chrome.runtime.lastError) {
+        window.close();
+      }
+    });
+    return;
+  }
+
+  window.close();
 });
 
 function parseTarget(rawUrl) {

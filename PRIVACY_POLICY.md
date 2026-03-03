@@ -1,12 +1,12 @@
-# Privacy Policy - Website Hold
+# Privacy Policy - Hold Up
 
 Last updated: February 25, 2026
 
-Website Hold is a Chrome extension that shows a confirmation screen before opening user-configured websites.
+Hold Up is a Chrome extension that shows a confirmation screen before opening user-configured websites.
 
 ## Data Collection
 
-Website Hold does not collect, transmit, sell, or share personal data.
+Hold Up does not collect, transmit, sell, or share personal data.
 
 The extension stores only the list of websites configured by the user in Chrome extension storage (`chrome.storage`).
 
@@ -16,11 +16,11 @@ Configured website entries are used only to decide when to show the confirmation
 
 ## Third Parties
 
-Website Hold does not send data to third-party servers.
+Hold Up does not send data to third-party servers.
 
 ## Security
 
-Website Hold runs locally in the browser and does not include remote code execution.
+Hold Up runs locally in the browser and does not include remote code execution.
 
 ## Contact
 
