@@ -5,7 +5,7 @@
 - Extension name: Hold Up
 - Category: Productivity
 - Language: English (United States)
-- Version: 0.1.1
+- Version: 0.1.2
 
 ## Short Description (132 chars max)
 

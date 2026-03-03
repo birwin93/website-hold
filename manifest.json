@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Hold Up",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Shows a confirmation interstitial before visiting configured websites.",
   "permissions": ["storage", "tabs"],
   "background": {
