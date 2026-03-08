@@ -6,7 +6,7 @@ A Manifest V3 Chrome extension that intercepts configured sites and shows a conf
 
 - Configure blocked domains in the extension options page.
 - Redirects attempts to those domains to an interstitial screen.
-- `Continue` allows only the current confirmed navigation, then prompts again.
+- `Continue` allows that site for the current tab until you leave it, so in-site clicks do not re-prompt.
 
 ## Load in Chrome
 

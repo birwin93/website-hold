@@ -1,5 +1,5 @@
 const BLOCKED_SITES_KEY = "blockedSites";
-const BYPASS_KEY = "bypassByTabId";
+const ALLOWED_SITE_KEY = "allowedSiteByTabId";
 
 chrome.runtime.onInstalled.addListener(async () => {
   const existing = await chrome.storage.sync.get(BLOCKED_SITES_KEY);
@@ -16,6 +16,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   void maybeShowInterstitial(tabId, changeInfo.url);
 });
 
+chrome.tabs.onRemoved.addListener((tabId) => {
+  void clearAllowedSite(tabId);
+});
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type !== "allowOnce") {
     return;
@@ -24,13 +28,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   void (async () => {
     const tabId = Number(message.tabId);
     const targetUrl = String(message.targetUrl || "");
+    const blockedSite = await getMatchingBlockedSiteForUrl(targetUrl);
 
-    if (!Number.isInteger(tabId) || !isHttpUrl(targetUrl)) {
+    if (!Number.isInteger(tabId) || !isHttpUrl(targetUrl) || !blockedSite) {
       sendResponse({ ok: false, error: "Invalid tab or URL." });
       return;
     }
 
-    await saveBypass(tabId, targetUrl);
+    await saveAllowedSite({ tabId, blockedSite });
     await chrome.tabs.update(tabId, { url: targetUrl });
     sendResponse({ ok: true });
   })();
@@ -54,13 +59,14 @@ async function maybeShowInterstitial(tabId, targetUrl) {
   }
 
   const blockedSites = await getBlockedSites();
-  if (!blockedSites.some((blockedHost) => hostMatches(host, blockedHost))) {
+  const matchingBlockedSite = getMatchingBlockedSite({ host, blockedSites });
+  if (!matchingBlockedSite) {
+    await clearAllowedSite(tabId);
     return;
   }
 
-  const bypassTargetUrl = await getBypass(tabId);
-  if (bypassTargetUrl && urlsEquivalent(targetUrl, bypassTargetUrl)) {
-    await clearBypass(tabId);
+  const allowedSite = await getAllowedSite(tabId);
+  if (allowedSite && hostMatches(host, allowedSite)) {
     return;
   }
 
@@ -83,28 +89,28 @@ async function getBlockedSites() {
     .filter(Boolean);
 }
 
-async function getBypass(tabId) {
-  const session = await chrome.storage.session.get(BYPASS_KEY);
-  const map = session[BYPASS_KEY] || {};
-  return map[String(tabId)] || null;
+async function getAllowedSite(tabId) {
+  const session = await chrome.storage.session.get(ALLOWED_SITE_KEY);
+  const map = session[ALLOWED_SITE_KEY] || {};
+  return normalizeSiteEntry(map[String(tabId)]);
 }
 
-async function saveBypass(tabId, targetUrl) {
-  const session = await chrome.storage.session.get(BYPASS_KEY);
-  const map = session[BYPASS_KEY] || {};
-  map[String(tabId)] = normalizeUrl(targetUrl);
-  await chrome.storage.session.set({ [BYPASS_KEY]: map });
+async function saveAllowedSite({ tabId, blockedSite }) {
+  const session = await chrome.storage.session.get(ALLOWED_SITE_KEY);
+  const map = session[ALLOWED_SITE_KEY] || {};
+  map[String(tabId)] = normalizeSiteEntry(blockedSite);
+  await chrome.storage.session.set({ [ALLOWED_SITE_KEY]: map });
 }
 
-async function clearBypass(tabId) {
-  const session = await chrome.storage.session.get(BYPASS_KEY);
-  const map = session[BYPASS_KEY] || {};
+async function clearAllowedSite(tabId) {
+  const session = await chrome.storage.session.get(ALLOWED_SITE_KEY);
+  const map = session[ALLOWED_SITE_KEY] || {};
   if (!map[String(tabId)]) {
     return;
   }
 
   delete map[String(tabId)];
-  await chrome.storage.session.set({ [BYPASS_KEY]: map });
+  await chrome.storage.session.set({ [ALLOWED_SITE_KEY]: map });
 }
 
 function getHost(rawUrl) {
@@ -128,16 +134,18 @@ function hostMatches(host, blockedHost) {
   return host === blockedHost || host.endsWith(`.${blockedHost}`);
 }
 
-function normalizeUrl(rawUrl) {
-  try {
-    return new URL(rawUrl).href;
-  } catch {
-    return rawUrl;
+async function getMatchingBlockedSiteForUrl(targetUrl) {
+  const host = getHost(targetUrl);
+  if (!host) {
+    return null;
   }
+
+  const blockedSites = await getBlockedSites();
+  return getMatchingBlockedSite({ host, blockedSites });
 }
 
-function urlsEquivalent(urlA, urlB) {
-  return normalizeUrl(urlA) === normalizeUrl(urlB);
+function getMatchingBlockedSite({ host, blockedSites }) {
+  return blockedSites.find((blockedHost) => hostMatches(host, blockedHost)) || null;
 }
 
 function normalizeSiteEntry(rawEntry) {
